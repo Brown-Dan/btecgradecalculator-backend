@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.danbrown.btecgradecalculatorbackend.Model.Course;
 import uk.danbrown.btecgradecalculatorbackend.service.CourseInformationService;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/information")
 public class CourseInformationController {
@@ -19,7 +21,13 @@ public class CourseInformationController {
     }
 
     @GetMapping("/{courseType}")
-    public ResponseEntity<Course> getCourseById(@PathVariable String courseType) {
-        return ResponseEntity.ok(courseInformationService.getCourseById(courseType));
+    public ResponseEntity<?> getCourseById(@PathVariable String courseType) {
+        Optional<Course> course = courseInformationService.getCourseById(courseType);
+
+        if (course.isPresent()) {
+            return ResponseEntity.ok(course.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -23,7 +23,9 @@ public enum UnitEntity {
     MANAGING_AND_SUPPORTING_SYSTEMS("Managing and Supporting Systems", 60),
     VIRTUALISATION("Virtualisation", 60),
     SYSTEMS_ANALYSIS_AND_DESIGN("Systems Analysis and Design", 60),
-    SYSTEMS_METHODOLOGY("Systems Methodology", 60);
+    SYSTEMS_METHODOLOGY("Systems Methodology", 60),
+
+    GENERIC_OPTIONAL_UNIT("GENERIC_OPTIONAL_UNIT ", 60);
 
 
     private final String name;
