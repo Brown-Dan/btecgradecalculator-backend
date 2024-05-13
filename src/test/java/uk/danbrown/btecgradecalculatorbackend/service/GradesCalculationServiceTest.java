@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.danbrown.btecgradecalculatorbackend.Model.CourseGradeCalculationRequest;
 import uk.danbrown.btecgradecalculatorbackend.Model.GradesCalculation;
-import uk.danbrown.btecgradecalculatorbackend.repository.CourseInformationRepository;
+import uk.danbrown.btecgradecalculatorbackend.repository.InformationRepository;
 import uk.danbrown.btecgradecalculatorbackend.repository.GradeRepository;
 import uk.danbrown.btecgradecalculatorbackend.repository.UcasPointRepository;
 import uk.danbrown.btecgradecalculatorbackend.repository.UnitRepository;
@@ -25,7 +25,7 @@ public class GradesCalculationServiceTest {
     @BeforeEach
     void setUp() {
         gradeCalculationService = new GradeCalculationService(
-                new CourseInformationRepository(),
+                new InformationRepository(),
                 new GradeRepository(),
                 new UnitRepository(),
                 new UcasPointRepository());
