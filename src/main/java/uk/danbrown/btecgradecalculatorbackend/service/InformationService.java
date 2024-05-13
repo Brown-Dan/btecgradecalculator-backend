@@ -20,6 +20,10 @@ public class InformationService {
         return informationRepository.findCourseBySubjectAndType(subject, courseType);
     }
 
+    public Optional<List<Course>> getCoursesBySubject(String subject) {
+        return informationRepository.getSubjectInformation(subject);
+    }
+
     public List<String> getSupportedCourseTypes(String subject) {
         return informationRepository.getSupportedCourseTypes(subject);
     }

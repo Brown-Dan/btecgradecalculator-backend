@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.danbrown.btecgradecalculatorbackend.Model.Course;
 import uk.danbrown.btecgradecalculatorbackend.service.InformationService;
 
+import java.util.List;
 import java.util.Optional;
+
+import static java.util.Map.of;
 
 @RestController
 @RequestMapping("/information")
@@ -21,7 +24,7 @@ public class InformationController {
     }
 
     @GetMapping("/{subject}/{courseType}")
-    public ResponseEntity<?> findCourse(@PathVariable String courseType, @PathVariable String subject) {
+    public ResponseEntity<?> findCourseTypeInformation(@PathVariable String courseType, @PathVariable String subject) {
         Optional<Course> course = informationService.findCourseBySubjectAndType(subject, courseType);
 
         if (course.isPresent()) {
@@ -31,8 +34,20 @@ public class InformationController {
         }
     }
 
+    @GetMapping("/{subject}")
+    public ResponseEntity<?> getCoursesBySubject(@PathVariable String subject) {
+        Optional<List<Course>> subjectInformation = informationService.getCoursesBySubject(subject);
+
+        if (subjectInformation.isPresent()) {
+            return ResponseEntity.ok(subjectInformation.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
     @GetMapping("/{subject}/types")
     public ResponseEntity<?> getSupportedTypesBySubject(@PathVariable String subject) {
-        return ResponseEntity.ok(informationService.getSupportedCourseTypes(subject));
+        return ResponseEntity.ok(of("supportedTypes", informationService.getSupportedCourseTypes(subject)));
     }
 }

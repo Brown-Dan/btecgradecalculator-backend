@@ -3,10 +3,10 @@ package uk.danbrown.btecgradecalculatorbackend.repository;
 import org.springframework.stereotype.Repository;
 import uk.danbrown.btecgradecalculatorbackend.Model.Course;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static uk.danbrown.btecgradecalculatorbackend.Model.Course.Builder.aCourse;
 
@@ -22,6 +22,13 @@ public class InformationRepository {
                 .findFirst()
                 .map(this::mapCourseEntityToCourse));
 
+    }
+
+    public Optional<List<Course>> getSubjectInformation(String subject) {
+        return Arrays.stream(SubjectEntity.values()).filter(sbj -> sbj.getSubject().equalsIgnoreCase(subject))
+                .findFirst()
+                .map(SubjectEntity::getCourseTypes)
+                .map(courseEntities -> courseEntities.stream().map(this::mapCourseEntityToCourse).toList());
     }
 
     public Course getCourseByType(String subject, String courseType) {
