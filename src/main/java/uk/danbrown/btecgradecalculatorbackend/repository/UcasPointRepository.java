@@ -10,7 +10,8 @@ public class UcasPointRepository {
     private static final Map<String, Integer> EXTENDED_DIPLOMA_GRADE_TO_UCAS = Map.ofEntries(
             Map.entry("D*D*D*", 168),
             Map.entry("D*D*D", 160),
-            Map.entry("D*DD", 144),
+            Map.entry("D*DD", 152),
+            Map.entry("DDD", 144),
             Map.entry("DDM", 128),
             Map.entry("DMM", 112),
             Map.entry("MMM", 96),
