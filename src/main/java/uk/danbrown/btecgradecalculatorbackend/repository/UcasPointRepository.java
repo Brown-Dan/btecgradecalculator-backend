@@ -52,11 +52,11 @@ public class UcasPointRepository {
     );
 
     private static final Map<String, Map<String, Integer>> COURSE_TO_UCAS_MAP = Map.of(
-            CourseEntity.NATIONAL_CERTIFICATE.getCourseType(), CERTIFICATE_TO_UCAS,
-            CourseEntity.NATIONAL_EXTENDED_CERTIFICATE.getCourseType(), EXTENDED_CERTIFICATE_TO_UCAS,
-            CourseEntity.NATIONAL_FOUNDATION_DIPLOMA.getCourseType(), FOUNDATION_DIPLOMA_TO_UCAS,
-            CourseEntity.NATIONAL_DIPLOMA.getCourseType(), DIPLOMA_GRADE_TO_UCAS,
-            CourseEntity.NATIONAL_EXTENDED_DIPLOMA.getCourseType(), EXTENDED_DIPLOMA_GRADE_TO_UCAS
+            CourseEntity.NATIONAL_CERTIFICATE_COMPUTING.getCourseType(), CERTIFICATE_TO_UCAS,
+            CourseEntity.NATIONAL_EXTENDED_CERTIFICATE_COMPUTING.getCourseType(), EXTENDED_CERTIFICATE_TO_UCAS,
+            CourseEntity.NATIONAL_FOUNDATION_DIPLOMA_COMPUTING.getCourseType(), FOUNDATION_DIPLOMA_TO_UCAS,
+            CourseEntity.NATIONAL_DIPLOMA_COMPUTING.getCourseType(), DIPLOMA_GRADE_TO_UCAS,
+            CourseEntity.NATIONAL_EXTENDED_DIPLOMA_COMPUTING.getCourseType(), EXTENDED_DIPLOMA_GRADE_TO_UCAS
     );
 
     public Integer getUcasPointsFromGrade(String courseName, String grade) {

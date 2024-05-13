@@ -3,27 +3,37 @@ package uk.danbrown.btecgradecalculatorbackend.repository;
 import org.springframework.stereotype.Repository;
 import uk.danbrown.btecgradecalculatorbackend.Model.Course;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static uk.danbrown.btecgradecalculatorbackend.Model.Course.Builder.aCourse;
 
 @Repository
-public class CourseInformationRepository {
+public class InformationRepository {
 
-    private static final Map<String, CourseEntity> courseTypeToCourseMap =
-            Arrays.stream(CourseEntity.values()).collect(Collectors.toMap(CourseEntity::getCourseType, Function.identity()));
+    public Optional<Course> findCourseBySubjectAndType(String subject, String courseType) {
+        return Arrays.stream(SubjectEntity.values())
+                .filter(sbj -> sbj.getSubject().equalsIgnoreCase(subject))
+                .findFirst().flatMap(entity -> Arrays.stream(CourseEntity.values())
+                .filter(courseTyp -> courseTyp.getSubject().equalsIgnoreCase(entity.getSubject()))
+                .filter(courseTyp -> courseTyp.getCourseType().equalsIgnoreCase(courseType))
+                .findFirst()
+                .map(this::mapCourseEntityToCourse));
 
-    public Optional<Course> findCourseByType(String courseType) {
-        return Optional.ofNullable(courseTypeToCourseMap.get(courseType))
-                .map(this::mapCourseEntityToCourse);
     }
 
-    public Course getCourseByType(String courseType) {
-        return mapCourseEntityToCourse(courseTypeToCourseMap.get(courseType));
+    public Course getCourseByType(String subject, String courseType) {
+        return findCourseBySubjectAndType(subject, courseType).get();
+    }
+
+    public List<String> getSupportedCourseTypes(String subject) {
+        return Arrays.stream(SubjectEntity.values())
+                .filter(sbj -> sbj.getSubject().equalsIgnoreCase(subject))
+                .findFirst()
+                .map(sbj -> sbj.getCourseTypes().stream().map(CourseEntity::getCourseType).toList())
+                .get();
     }
 
     private Course mapCourseEntityToCourse(CourseEntity courseEntity) {

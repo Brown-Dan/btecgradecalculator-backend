@@ -2,7 +2,7 @@ package uk.danbrown.btecgradecalculatorbackend.service;
 
 import org.springframework.stereotype.Service;
 import uk.danbrown.btecgradecalculatorbackend.Model.*;
-import uk.danbrown.btecgradecalculatorbackend.repository.CourseInformationRepository;
+import uk.danbrown.btecgradecalculatorbackend.repository.InformationRepository;
 import uk.danbrown.btecgradecalculatorbackend.repository.GradeRepository;
 import uk.danbrown.btecgradecalculatorbackend.repository.UcasPointRepository;
 import uk.danbrown.btecgradecalculatorbackend.repository.UnitRepository;
@@ -10,7 +10,6 @@ import uk.danbrown.btecgradecalculatorbackend.repository.UnitRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static uk.danbrown.btecgradecalculatorbackend.Model.Grade.*;
 import static uk.danbrown.btecgradecalculatorbackend.Model.GradeWithUcasPoints.Builder.aGradeWithUcasPoints;
@@ -22,13 +21,13 @@ import static uk.danbrown.btecgradecalculatorbackend.repository.UnitEntity.GENER
 public class GradeCalculationService {
 
     // TODO fix this not nice
-    private final CourseInformationRepository courseInformationRepository;
+    private final InformationRepository informationRepository;
     private final GradeRepository gradeRepository;
     private final UnitRepository unitRepository;
     private final UcasPointRepository ucasPointRepository;
 
-    public GradeCalculationService(CourseInformationRepository courseInformationRepository, GradeRepository gradeRepository, UnitRepository unitRepository, UcasPointRepository ucasPointRepository) {
-        this.courseInformationRepository = courseInformationRepository;
+    public GradeCalculationService(InformationRepository informationRepository, GradeRepository gradeRepository, UnitRepository unitRepository, UcasPointRepository ucasPointRepository) {
+        this.informationRepository = informationRepository;
         this.gradeRepository = gradeRepository;
         this.unitRepository = unitRepository;
         this.ucasPointRepository = ucasPointRepository;
@@ -45,13 +44,14 @@ public class GradeCalculationService {
     );
 
     public GradesCalculation calculateGrades(CourseGradeCalculationRequest gradeCalculationRequest) {
-        Course actualCourse = courseInformationRepository.getCourseByType(gradeCalculationRequest.courseType());
+        Course actualCourse = informationRepository.getCourseByType(gradeCalculationRequest.subject(), gradeCalculationRequest.courseType());
+
         int missingOptionalUnitCount = (actualCourse.mandatoryUnits().size() + actualCourse.optionalUnitCount()) -
                                        gradeCalculationRequest.units().size();
         for (int i = 0; i < missingOptionalUnitCount; i++) {
             gradeCalculationRequest.units().add(anUnitGradeCalculationRequest()
-                            .withUnitName(GENERIC_OPTIONAL_UNIT.getName())
-                            .withGrade(PENDING)
+                    .withUnitName(GENERIC_OPTIONAL_UNIT.getName())
+                    .withGrade(PENDING)
                     .build());
         }
 
@@ -63,13 +63,10 @@ public class GradeCalculationService {
                 .average()
                 .orElse(0.0);
 
+
+        // TODO same all (engineering special logic)
         Map<Integer, List<Grade>> pointGradeMap = gradeRepository
                 .getPointsToGradeMap(gradeCalculationRequest.courseType());
-
-        List<List<Grade>> grades = Stream.of(CURRENT_GRADE_COEFFICIENT, MAX_GRADE_COEFFICIENT, predictedCoefficient)
-                .map(coefficient -> getPoints(gradeCalculationRequest, coefficient))
-                .map(points -> pointsToGrade(pointGradeMap, points))
-                .toList();
 
         String currentGrade = mapGrades(pointsToGrade(pointGradeMap, getPoints(gradeCalculationRequest, CURRENT_GRADE_COEFFICIENT)));
         String expectedGrade = mapGrades(pointsToGrade(pointGradeMap, getPoints(gradeCalculationRequest, predictedCoefficient)));
@@ -99,7 +96,7 @@ public class GradeCalculationService {
             }
             double coefficient = unit.grade() == PENDING ? pendingCoefficient :
                     gradeCoefficientMap.get(unit.grade());
-
+            // EACH UNIT IN UNIT_ENTITIES
             totalPoints += (int) (coefficient * unitRepository.getGuidedLearningHoursByUnitName(unit.unitName()) / 10);
         }
         return totalPoints;

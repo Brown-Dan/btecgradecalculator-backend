@@ -1,10 +1,7 @@
 package uk.danbrown.btecgradecalculatorbackend.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.danbrown.btecgradecalculatorbackend.Model.CourseGradeCalculationRequest;
 import uk.danbrown.btecgradecalculatorbackend.service.GradeCalculationService;
 
@@ -18,8 +15,8 @@ public class GradeCalculationController {
         this.gradeCalculationService = gradeCalculationService;
     }
 
-    @PostMapping()
-    public ResponseEntity<?> calculateGrade(@RequestBody CourseGradeCalculationRequest courseGradeCalculationRequest) {
-        return ResponseEntity.ok(gradeCalculationService.calculateGrades(courseGradeCalculationRequest));
+    @PostMapping("/{subject}")
+    public ResponseEntity<?> calculateGrade(@RequestBody CourseGradeCalculationRequest courseGradeCalculationRequest, @PathVariable String subject) {
+        return ResponseEntity.ok(gradeCalculationService.calculateGrades(courseGradeCalculationRequest.addSubject(subject)));
     }
 }
