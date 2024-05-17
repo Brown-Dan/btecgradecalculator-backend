@@ -14,17 +14,17 @@ import uk.danbrown.btecgradecalculatorbackend.service.GradeCalculationService;
 @RequestMapping("/calculate")
 public class GradeCalculationController {
 
-    private final GradeCalculationService gradeCalculationService;
-
     private static final Logger LOG = LoggerFactory.getLogger(GradeCalculationController.class);
+
+    private final GradeCalculationService gradeCalculationService;
 
     public GradeCalculationController(GradeCalculationService gradeCalculationService) {
         this.gradeCalculationService = gradeCalculationService;
     }
 
-    @PostMapping()
-    public ResponseEntity<?> calculateGrade(@RequestBody CourseGradeCalculationRequest courseGradeCalculationRequest) {
+    @PostMapping("/{subject}")
+    public ResponseEntity<?> calculateGrade(@RequestBody CourseGradeCalculationRequest courseGradeCalculationRequest, @PathVariable String subject) {
         LOG.info("Received Grade Calculation Request with data - {}", courseGradeCalculationRequest);
-        return ResponseEntity.ok(gradeCalculationService.calculateGrades(courseGradeCalculationRequest));
+        return ResponseEntity.ok(gradeCalculationService.calculateGrades(courseGradeCalculationRequest.addSubject(subject)));
     }
 }

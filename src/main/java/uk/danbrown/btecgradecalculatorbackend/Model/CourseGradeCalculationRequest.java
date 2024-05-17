@@ -2,9 +2,15 @@ package uk.danbrown.btecgradecalculatorbackend.Model;
 
 import java.util.List;
 
-public record CourseGradeCalculationRequest(String courseType, List<UnitGradeCalculationRequest> units) {
+public record CourseGradeCalculationRequest(String subject, String courseType,
+                                            List<UnitGradeCalculationRequest> units) {
+
+    public CourseGradeCalculationRequest addSubject(String subject) {
+        return new CourseGradeCalculationRequest(subject, courseType, units);
+    }
 
     public static final class Builder {
+        private String subject;
         private String courseType;
         private List<UnitGradeCalculationRequest> units;
 
@@ -13,6 +19,11 @@ public record CourseGradeCalculationRequest(String courseType, List<UnitGradeCal
 
         public static Builder aCourseGradeCalculationRequest() {
             return new Builder();
+        }
+
+        public Builder withSubject(String subject) {
+            this.subject = subject;
+            return this;
         }
 
         public Builder withCourseType(String courseType) {
@@ -26,7 +37,7 @@ public record CourseGradeCalculationRequest(String courseType, List<UnitGradeCal
         }
 
         public CourseGradeCalculationRequest build() {
-            return new CourseGradeCalculationRequest(courseType, units);
+            return new CourseGradeCalculationRequest(subject, courseType, units);
         }
     }
 }
